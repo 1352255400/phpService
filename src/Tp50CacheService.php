@@ -9,7 +9,7 @@ use think\Cache;
  * [TpCacheService tp缓存 Logic]
  * @Author   W_wang
  * @email    1352255400@qq.com
- * @DateTime 2018-04-17T13:51:51+0800
+ * @DateTime 2011-11-11T11:11:11
  */
 class Tp50CacheService
 {
@@ -77,49 +77,6 @@ class Tp50CacheService
             return false;
         }
         $id = $this->keyPrefix . $id;
-        $re = Cache::store($this->store)->rm($id);
-        return $re;
-    }
-
-    /**
-     * [inc 自增（步进值为1）]
-     * @Author   W_wang
-     * @since 2019/3/25
-     * @param string $id
-     * @param int $val
-     * @return bool
-     */
-    public function inc($id = '', $val = 1)
-    {
-        if (!$id) {
-            return false;
-        }
-        $id = $this->keyPrefix . $id;
-        $data = Cache::store($this->store)->get($id);
-        $val = is_numeric($data) ? ($data + $val) : 1;
-        $re = Cache::store($this->store)->set($id, $val);
-        return $re;
-    }
-
-    /**
-     * [inc 自减（步进值为1）]
-     * @Author   W_wang
-     * @since 2019/3/25
-     * @param string $id
-     * @param int $val
-     * @return bool
-     */
-    public function dec($id = '', $val = 1)
-    {
-        if (!$id) {
-            return false;
-        }
-        $id = $this->keyPrefix . $id;
-        $data = Cache::store($this->store)->get($id);
-        $val = is_numeric($data) && $data > 1 ? ($data - $val) : 0;
-        if ($val > 0) {
-            return Cache::store($this->store)->set($id, $val);
-        }
         $re = Cache::store($this->store)->rm($id);
         return $re;
     }

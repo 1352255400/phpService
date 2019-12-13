@@ -1,18 +1,13 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
-$file = $msg = '';
-function p($str = '')
-{
-    echo '<pre>';
-    print_r($str);
-    echo '</pre>';
-}
+//引入公共文件
+require_once 'common.php';
 
 use phpService\ExcelService;
 
 $excle = new  ExcelService();
 
+$msg = '';
 //导入
 if (!empty($_FILES)) {
     $file = $_FILES['upfile'];

@@ -6,7 +6,7 @@ namespace phpService;
  * [CommonService 公共服务]
  * @Author   W_wang
  * @email    1352255400@qq.com
- * @DateTime 2018-04-17T13:51:51+0800
+ * @DateTime 2011-11-11T11:11:11
  */
 class CommonService
 {

@@ -1,18 +1,16 @@
 <?php
 
-namespace ImsCommonService;
+namespace phpService;
 
 use think\Model;
 use think\Db;
 use think\App;
 
-
 /**
- * @version 1.0
- * @author: W_wang
- * @since: 2019/1/25 15:17
- * Class BaseModel 基类 model
- * @package app\index\model
+ * [BaseModel 基类 model]
+ * @Author   W_wang
+ * @email    1352255400@qq.com
+ * @DateTime 2011-11-11T11:11:11
  */
 class BaseModel extends Model
 {

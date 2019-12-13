@@ -1,6 +1,6 @@
 {
   "name": "ims/php-service",
-  "description": "信息化公共服务,tp5.1.*",
+  "description": "php服务：（Excel：导入、导出。pdf：生成、转图片。word：生成）",
   "type": "n",
   "license": "MIT",
   "authors": [

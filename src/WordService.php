@@ -6,7 +6,7 @@ namespace phpService;
  * [WordHelper 生成mht ,生成word]
  * @Author   W_wang
  * @email    1352255400@qq.com
- * @DateTime 2019-12-12T17:21:14+0800
+ * @DateTime 2011-11-11T11:11:11
  */
 class WordService
 {
@@ -31,10 +31,7 @@ class WordService
     public function index($data = array(), $absolutePath = "", $isEraseLink = true)
     {
         $file_name = isset($data['file_name']) ? $data['file_name'] : time();//文件名
-        $title_header = isset($data['title_header']) ? $data['title_header'] : '';//页首
-        $title_footer = isset($data['title_footer']) ? $data['title_footer'] : '';//页尾
         $content = isset($data['content']) ? $data['content'] : '';//内容
-        $water_text = isset($data['water_text']) ? $data['water_text'] : '忆阁轩';//水印
 
         //去掉链接
         if ($isEraseLink) {
@@ -109,16 +106,6 @@ class WordService
         $this->headers_exists[$key] = TRUE;
     }
 
-    private function SetFrom($from)
-    {
-        $this->SetHeader("From: $from");
-    }
-
-    private function SetSubject($subject)
-    {
-        $this->SetHeader("Subject: $subject");
-    }
-
     private function SetDate($date = NULL, $istimestamp = FALSE)
     {
         if ($date == NULL) {
@@ -137,27 +124,6 @@ class WordService
         } else {
             $this->boundary = $boundary;
         }
-    }
-
-    private function SetBaseDir($dir)
-    {
-        $this->dir_base = str_replace("\\", "/", realpath($dir));
-    }
-
-    private function SetFirstPage($filename)
-    {
-        $this->page_first = str_replace("\\", "/", realpath("{$this->dir_base}/$filename"));
-    }
-
-    private function AutoAddFiles()
-    {
-        if (!isset($this->page_first)) {
-            exit ('Not set the first page.');
-        }
-        $filepath = str_replace($this->dir_base, '', $this->page_first);
-        $filepath = 'http://mhtfile' . $filepath;
-        $this->AddFile($this->page_first, $filepath, NULL);
-        $this->AddDir($this->dir_base);
     }
 
     private function AddDir($dir)
@@ -248,14 +214,6 @@ class WordService
         }
         $contents .= "--{$this->boundary}--\r\n";
         return $contents;
-    }
-
-    private function MakeFile($filename)
-    {
-        $contents = $this->GetFile();
-        $fp = fopen($filename, 'w');
-        fwrite($fp, $contents);
-        fclose($fp);
     }
 
     private function GetMimeType($filename)

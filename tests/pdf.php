@@ -3,27 +3,6 @@
 //引入公共文件
 require_once 'common.php';
 
-
-
-//pdf转成图片
-use phpService\WordService;
-
-//实例化
-$api = new  WordService();
-
-$data = [];
-$data['file_name'] = 'pdf';
-$data['title_header'] = '页首';
-$data['title_footer'] = '页尾';
-$data['content'] = 'word<img src="http://ims.com/file/demo.jpg" style="width: 1100px"/>';
-$data['content'] = "word<img src='http://ims.com/file/demo.jpg' /><img src='file/demo.jpg'/>";
-$data['content'] = 'word';
-$data['water_text'] = '水印';
-$data['is_down'] = 0;
-//$api->index($data,'http://ims.com/');
-
-
-
 //pdf转成图片
 use phpService\PdfService;
 
@@ -38,8 +17,8 @@ $data['title_footer'] = '页尾';
 $data['content'] = '<img src="file/demo.jpg" style="width: 1100px"/>';
 $data['water_text'] = '水印';
 $data['is_down'] = 0;
-//$api->strToPdf($data);
-//die;
+$api->strToPdf($data);
+die;
 
 
 //use phpService\PdfService;

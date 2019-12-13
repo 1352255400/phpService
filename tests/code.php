@@ -1,7 +1,7 @@
 <?php
 	//效果界面
 	require_once __DIR__ . '/../vendor/autoload.php';
-	use ImsCommonService\Code\Code;
+	use phpService\Code\Code;
 
 	$code = isset($_GET['code']) ? $_GET['code'] : '';
 	if (!empty($code) && $code == 1) {

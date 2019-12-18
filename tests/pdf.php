@@ -21,19 +21,11 @@ $api->strToPdf($data);
 die;
 
 
-//use phpService\PdfService;
-
-$pdf = new PdfService();
 echo $file_path = BASE_PATH . 'file/demo.pdf';
 //将pdf转成png
-$imgArr = $pdf->pdfToPng($file_path, 'file/pdf');
+$imgArr = $api->pdfToPngArr($file_path, 'file/pdf');
 p($imgArr);
 die;
-if (empty($imgArr)) {
-    p('将pdf转成png失败');
-}
-//拼接图片
-$img = '';
-if (!empty($imgArr) && is_array($imgArr)) {
-    $img = $pdf->spliceImg($imgArr, 'file/pdf/');
-}
+$imgArr = $api->pdfToPng($file_path, 'file/pdf');
+p($imgArr);
+die;

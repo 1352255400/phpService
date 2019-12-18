@@ -44,104 +44,101 @@ class PdfService
     }
 
     /**
-     * PDF2PNG
-     * @param $pdf  待处理的PDF文件
-     * @param $path 待保存的图片路径
-     * @param int|待导出的页面 $page 待导出的页面 -1为全部 0为第一页 1为第二页
-     * @return 保存好的图片路径和文件名 注：此处为坑 对于Imagick中的$pdf路径 和$path路径来说，   php版本为5+ 可以使用相对路径。php7+版本必须使用绝对路径。所以，建议大伙使用绝对路径。
-     * 注：此处为坑 对于Imagick中的$pdf路径 和$path路径来说，   php版本为5+ 可以使用相对路径。php7+版本必须使用绝对路径。所以，建议大伙使用绝对路径。
+     * 将pdf文件转化为多张png图片
+     * @param string $pdf pdf所在路径 （/www/pdf/abc.pdf pdf所在的绝对路径）
+     * @param string $path 新生成图片所在路径 (/www/pngs/)     *
+     * @return array|bool
      */
-    public function pdfToPng($pdf, $path, $page = -1)
+    public function pdfToPngArr($pdf = '', $path = '')
     {
         if (!extension_loaded('imagick')) {
             return ['code' => '1000', 'data' => [], 'msg' => '请安装imagick扩展'];
         }
         if (!file_exists($pdf)) {
-            return ['code' => '1000', 'data' => [], 'msg' => 'pdf文件不存在'];
-        }
-        if (!is_readable($pdf)) {
-            return ['code' => '1000', 'data' => [], 'msg' => 'pdf读取权限不足'];
+            return ['code' => '1000', 'data' => [], 'msg' => '请检查pdf文件路径'];
         }
 
-        $Return = [];
-//        try {
-        $im = new \Imagick();
-        $im->setResolution(150, 150);
-        $im->setCompressionQuality(100);
-        if ($page == -1) {
-            $im->readImage($pdf);
-        } else {
-            $im->readImage($pdf . "[" . $page . "]");
-        }
-
-        foreach ($im as $Key => $Var) {
-            $Var->setImageFormat('png');
-            $filename = $path . md5($Key . time()) . '.png';
-            if ($Var->writeImage($filename) == true) {
-                $Return[] = $filename;
+        //检查存放目录
+        $path = $path . date('Ymd') . '/';
+        if (!file_exists($path)) {
+            if (!$this->createFolders($path)) {
+                /* 创建目录失败 */
+                return ['code' => '1000', 'data' => $path, 'msg' => '创建目录失败'];
             }
         }
-        //返回转化图片数组，由于pdf可能多页，此处返回二维数组。
-        return $Return;
-//        } catch (\Exception $e) {
-//            return ['code' => '1000', 'data' => [], 'msg' => '转换失败'];
-//        }
+
+        try {
+            $im = new \Imagick();
+            $im->setResolution(120, 120); //设置分辨率 值越大分辨率越高
+            $im->setCompressionQuality(100);
+            $im->readImage($pdf);
+            foreach ($im as $k => $v) {
+                $v->setImageFormat('png');
+                $fileName = $path . md5($k . time()) . '.png';
+                if ($v->writeImage($fileName) == true) {
+                    $return[] = $fileName;
+                }
+            }
+            return ['code' => '000', 'data' => $return, 'msg' => 'ok'];
+        } catch (Exception $e) {
+            return ['code' => '1000', 'data' => $e, 'msg' => '转换异常'];
+        }
     }
 
-
     /**
-     * spliceimg
-     * @param array $imgs pdf转化png  路径
-     * @param string $img_path
-     * @return string 将多个图片拼接为成图的路径
-     * 注：多页的pdf转化为图片后拼接方法
-     * @internal param string $path 待保存的图片路径
+     * 将pdf转化为单一png图片
+     * @param string $pdf pdf所在路径 （/www/pdf/abc.pdf pdf所在的绝对路径）
+     * @param string $path 新生成图片所在路径 (/www/pngs/)
+     * @return array
      */
-    public function spliceImg($imgs = array(), $img_path = '')
+    public function pdfToPng($pdf = '', $path = '')
     {
-
-        $width = 600; //自定义宽度
-        $height = null;
-        $pic_tall = 0;//获取总高度
-        foreach ($imgs as $key => $value) {
-            $arr = getimagesize($value);
-            $height = $width / $arr[0] * $arr[1];
-            $pic_tall += $height;
+        if (!extension_loaded('imagick')) {
+            return ['code' => '1000', 'data' => [], 'msg' => '请安装imagick扩展'];
         }
-        $pic_tall = intval($pic_tall);
-        // 创建长图
-        $targetImg = imagecreatetruecolor($width, $pic_tall);
-        //分配一个白色底色
-        $color = imagecolorAllocate($targetImg, 255, 255, 255);
-        imagefill($targetImg, 0, 0, $color);
-
-        $tmp = 0;
-        $tmpy = 0; //图片之间的间距
-        $src = null;
-        $size = null;
-        foreach ($imgs as $k => $v) {
-            $src = Imagecreatefrompng($v);
-            $size = getimagesize($v);
-            //5.进行缩放
-            imagecopyresampled($targetImg, $src, $tmp, $tmpy, 0, 0, $width, $height, $size[0], $size[1]);
-            //imagecopy($targetImg, $src, $tmp, $tmpy, 0, 0, $size[0],$size[1]);
-            $tmpy = $tmpy + $height;
-            //释放资源内存
-            imagedestroy($src);
-            unlink($imgs[$k]);
+        if (!file_exists($pdf)) {
+            return ['code' => '1000', 'data' => [], 'msg' => '请检查pdf文件路径'];
         }
-        $returnfile = $img_path . date('Y-m-d');
-        if (!file_exists($returnfile)) {
-            if ($this->createFolders($returnfile)) {
+
+        //检查存放目录
+        $path = $path . date('Ymd') . '/';
+        if (!file_exists($path)) {
+            if (!$this->createFolders($path)) {
                 /* 创建目录失败 */
-                return false;
+                return ['code' => '1000', 'data' => $path, 'msg' => '创建目录失败'];
             }
         }
-        $return_imgpath = $returnfile . '/' . md5(time() . $pic_tall . 'pdftopng') . '.png';
-        imagepng($targetImg, $return_imgpath);
-        $return_imgpath = str_replace(BASE_PATH, '', $return_imgpath);
-        return $return_imgpath;
 
+        try {
+            $im = new \Imagick();
+            $im->setCompressionQuality(100);
+            $im->setResolution(120, 120);//设置分辨率 值越大分辨率越高
+            $im->readImage($pdf);
+
+            $canvas = new \Imagick();
+            $imgNum = $im->getNumberImages();
+            //$canvas->setResolution(120, 120);
+            foreach ($im as $k => $sub) {
+                $sub->setImageFormat('png');
+                //$sub->setResolution(120, 120);
+                $sub->stripImage();
+                $sub->trimImage(0);
+                $width = $sub->getImageWidth() + 10;
+                $height = $sub->getImageHeight() + 10;
+                if ($k + 1 == $imgNum) {
+                    $height += 10;
+                } //最后添加10的height
+                $canvas->newImage($width, $height, new \ImagickPixel('white'));
+                $canvas->compositeImage($sub, \Imagick::COMPOSITE_DEFAULT, 5, 5);
+            }
+
+            $canvas->resetIterator();
+            $file_path = $path . microtime(true) . '.png';
+            $canvas->appendImages(true)->writeImage($file_path);
+            return ['code' => '000', 'data' => $file_path, 'msg' => 'ok'];
+        } catch (Exception $e) {
+            return ['code' => '1000', 'data' => $e, 'msg' => '转换异常'];
+        }
     }
 
     //创建目录

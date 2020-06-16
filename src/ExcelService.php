@@ -143,7 +143,8 @@ class ExcelService
                 //5.设置表格头（即excel表格的第一行）
                 if (!empty($title)) {
                     foreach ($title as $k_t => $v_t) {
-                        $obpe->getActiveSheet()->setCellValue($cellName[$k_t] . '1', $v_t);
+                        $key = \PHPExcel_Cell::stringFromColumnIndex($k_t);
+                        $obpe->getActiveSheet()->setCellValue($key . '1', $v_t);
                     }
                 }
 
@@ -152,7 +153,8 @@ class ExcelService
                 foreach ($data as $item) {
                     $item = array_values($item);
                     foreach ($item as $k_d => $v_d) {
-                        $obpe->getActiveSheet()->setCellValue($cellName[$k_d] . ($i + 2), $v_d);
+                        $key = \PHPExcel_Cell::stringFromColumnIndex($k_t);
+                        $obpe->getActiveSheet()->setCellValue($key . ($i + 2), $v_d);
                     }
                     $i++;
                 }

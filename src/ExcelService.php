@@ -153,7 +153,7 @@ class ExcelService
                 foreach ($data as $item) {
                     $item = array_values($item);
                     foreach ($item as $k_d => $v_d) {
-                        $key = \PHPExcel_Cell::stringFromColumnIndex($k_t);
+                        $key = \PHPExcel_Cell::stringFromColumnIndex($k_d);
                         $obpe->getActiveSheet()->setCellValue($key . ($i + 2), $v_d);
                     }
                     $i++;
